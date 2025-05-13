@@ -1,0 +1,84 @@
+
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class LatestPostCard extends StatelessWidget {
+  final String imagePath;
+  final String title;
+  final String authorImagePath;
+
+  const LatestPostCard({
+    required this.imagePath,
+    required this.title,
+    required this.authorImagePath,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final TextStyle fontChoice = GoogleFonts.instrumentSans();
+    final Color textColor = Color(0xff0d1b2a);
+
+    return Container(
+      width: double.infinity, // Full-width for vertical list
+      decoration: BoxDecoration(
+        color: Color(0xffF7F6F1),
+        // color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Color(0xffcccccc),
+        //     blurRadius: 3,
+        //   )
+        // ]
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image Section
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                imagePath,
+                height: 175,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox(height: 8),
+            // Title and Author Row
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                children: [
+                  // Author Image
+                  CircleAvatar(
+                    radius: 18,
+                    backgroundImage: AssetImage(authorImagePath),
+                  ),
+                  const SizedBox(width: 12),
+                  // Title
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: fontChoice.copyWith(
+                        fontSize: 15.3, // Reduced size
+                        fontWeight: FontWeight.w600,
+                        color: textColor,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+

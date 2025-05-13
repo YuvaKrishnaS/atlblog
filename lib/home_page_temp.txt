@@ -1,0 +1,308 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../cards/forYou_card.dart'; // Import the ForYouCard widget
+import '../cards/latestPost_card.dart'; // Import the LatestPostCard widget
+import 'login_page.dart';
+import '../splash.dart';
+
+class HomePage extends StatelessWidget {
+  final Color primaryColor = Color(0xFF192841); // Deep Navy Blue
+  final Color secondaryColor = Color(0xFFa38d42); // Muted Gold
+  final Color neutralColor = Color(0xfff0f4f5); // Off-White
+  final Color accentColor = Color(0xFFc89b3c); // Brighter Gold
+  final Color textColor = Color(0xFF212121); // Very Dark Gray
+  final Color backgroundColor = Color(0xfffcfdfd); //Simple White
+  final double element_padding = 16.0;
+  final double spaceForSearch = 20.0;
+  final double spaceFor_CardSections = 16.0;
+  final double spaceForLatestPost = 20.0;
+  final TextStyle FontChoice = GoogleFonts.instrumentSans();
+
+  void _logout(BuildContext context) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+  }
+  void _splash(BuildContext context) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => SplashScreen()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          Color appBarColor = neutralColor;
+          Color titleColor = innerBoxIsScrolled ? textColor : Colors.transparent;
+          return <Widget>[
+            SliverAppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: appBarColor,
+              title: innerBoxIsScrolled ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // crossAxisAlignment: CrossAxisAlignment.end, // Align to bottom
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      style: DefaultTextStyle.of(context).style,
+                      children: [
+                        TextSpan(
+                          text: 'krishna_naveen.1234',
+                          style: FontChoice.copyWith(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: textColor,
+                          ),
+                        ),
+                      ]
+                    ),
+                  ),
+                        GestureDetector(
+                          onTap: () => _splash(context),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Image.asset(
+                              'assets/profile.jpg',
+                              width: 41,
+                              height: 41,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ],
+              ) : SizedBox.shrink(),
+              shape: Border(
+                bottom: BorderSide(
+                  color: Colors.grey.shade300,
+                  width: 1.5,
+                ),
+              ),
+              expandedHeight: 75,
+              floating: false,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 30.0), // Set screen padding to zero
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(text: 'Hi Krishna Naveen,\n', style: FontChoice.copyWith(fontSize: 16, fontWeight: FontWeight.w400, color: textColor,),),
+                            TextSpan(text: 'Welcome to ', style: FontChoice.copyWith(fontSize: 24, fontWeight: FontWeight.w900, color: textColor,),),
+                            TextSpan(text: "ATL blog", style: GoogleFonts.instrumentSans(fontSize: 24, fontWeight: FontWeight.w800, color: accentColor,),),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => _logout(context),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: Image.asset(
+                            'assets/profile.jpg',
+                            width: 45,
+                            height: 45,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ];
+        },
+        // all code below the app bar
+        body:  SingleChildScrollView(
+          padding: const EdgeInsets.only(left: 0.0, right: 0.0, top: 0.0), // Set screen padding to zero
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: element_padding),
+              // Search Bar Section
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: element_padding),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: textColor.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(2, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          style: FontChoice.copyWith(
+                            fontSize: 16,
+                            color: textColor,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'What are you looking for today',
+                            hintStyle: FontChoice.copyWith(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: textColor.withOpacity(0.6),
+                            ),
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),Icon(Icons.search, color: textColor),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: spaceForSearch),
+              // "For You" Section
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: element_padding),
+                child: Text(
+                  'For You',
+                  style: GoogleFonts.instrumentSans(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: textColor,
+                  ),
+                ),
+              ),
+              SizedBox(height: spaceFor_CardSections),
+              // Horizontal Card Scroll (No Padding Applied)
+              SizedBox(
+                height: 200,
+                child: ListView.separated(
+                  padding: EdgeInsets.symmetric(horizontal: element_padding),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 10,
+                  separatorBuilder: (context, index) => SizedBox(width: 12),
+                  itemBuilder: (context, index) {
+                    return ForYouCard(
+                      imagePath: 'assets/sample_image.png',
+                      title: 'How to create games in Dart using Flutter Framework',
+                      authorName: 'JK Raizwal',
+                      authorImagePath: 'assets/profile_author.jpg',
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: spaceForLatestPost),
+              // "Latest Posts" Section
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: element_padding),
+                child: Text(
+                  'Latest Posts',
+                  style: GoogleFonts.instrumentSans(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: textColor,
+                  ),
+                ),
+              ),
+              SizedBox(height: spaceFor_CardSections),
+              // Vertical List of Cards
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: element_padding),
+                child: Column(
+                  children: List.generate(
+                    15,
+                        (index) => Padding(
+                      padding: EdgeInsets.only(bottom: element_padding),
+                      child: LatestPostCard(
+                        imagePath: 'assets/sample_image.png',
+                        title: 'How to improve UI/UX in Flutter apps',
+                        authorImagePath: 'assets/profile_author.jpg',
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      )
+    );
+  }
+}
+
+
+______________________________________________________________________________________
+________________SIMPLE HOME PAGE_____________________________________________________
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase_auth_sevices.dart';
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Hello👋',
+                style: GoogleFonts.raleway(
+                    textStyle: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20
+                    )
+                ),
+              ),
+              const SizedBox(height: 10,),
+              Text(
+                FirebaseAuth.instance.currentUser!.email!.toString(),
+                style: GoogleFonts.raleway(
+                    textStyle: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20
+                    )
+                ),
+              ),
+              const SizedBox(height: 30,),
+              _logout(context)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _logout(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xff0D6EFD),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+        minimumSize: const Size(double.infinity, 60),
+        elevation: 0,
+      ),
+      onPressed: () async {
+        await AuthService().signOut(context: context);
+      },
+      child: const Text("Sign Out"),
+    );
+  }
+}

@@ -1,0 +1,203 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class ProfilePage extends StatefulWidget {
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  User? user = FirebaseAuth.instance.currentUser;
+  DatabaseReference? _dbRef;
+  String? profilePicBase64;
+
+  @override
+  void initState() {
+    super.initState();
+    _dbRef = FirebaseDatabase.instance.ref('users/${user!.uid}');
+    _getProfilePicture();
+  }
+
+  /// Fetch profile picture from the database
+  Future<void> _getProfilePicture() async {
+    _dbRef!.child('profilePicture').once().then((DatabaseEvent event) {
+      if (event.snapshot.value != null) {
+        setState(() {
+          profilePicBase64 = event.snapshot.value as String?;
+        });
+      }
+    });
+  }
+
+  /// Pick an image and upload as profile picture
+  Future<void> _pickAndUploadImage() async {
+    final ImagePicker _picker = ImagePicker();
+    XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      File file = File(image.path);
+      List<int> imageBytes = await file.readAsBytes();
+      String base64Image = base64Encode(imageBytes);
+
+      await _dbRef!.update({'profilePicture': base64Image});
+
+      setState(() {
+        profilePicBase64 = base64Image;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Profile picture updated!')),
+      );
+    }
+  }
+
+  /// Remove the profile picture
+  Future<void> _removeProfilePicture() async {
+    await _dbRef!.update({'profilePicture': null});
+    setState(() {
+      profilePicBase64 = null;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Profile picture removed.')),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ImageProvider? profilePic = profilePicBase64 != null
+        ? MemoryImage(base64Decode(profilePicBase64!))
+        : AssetImage('assets/default_profile_pic.png') as ImageProvider;
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          'Profile',
+          style: GoogleFonts.instrumentSans(
+            fontWeight: FontWeight.w700,
+            fontSize: 22,
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: RefreshIndicator(
+        onRefresh: _getProfilePicture,
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 20),
+              // Profile Picture Section
+              Center(
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundImage: profilePic,
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: PopupMenuButton<String>(
+                      onSelected: (String value) {
+                        if (value == 'Upload') {
+                          _pickAndUploadImage();
+                        } else if (value == 'Remove') {
+                          _removeProfilePicture();
+                        }
+                      },
+                      itemBuilder: (BuildContext context) {
+                        return ['Upload', 'Remove']
+                            .map((String choice) => PopupMenuItem<String>(
+                                  value: choice,
+                                  child: Text(choice),
+                                ))
+                            .toList();
+                      },
+                      icon: CircleAvatar(
+                        radius: 18,
+                        backgroundColor: Color(0xffc89b3c),
+                        child: Icon(
+                          Icons.camera_alt,
+                          size: 22,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              // User Name
+              Text(
+                user?.displayName ?? 'User Name',
+                style: GoogleFonts.instrumentSans(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff212121),
+                ),
+              ),
+              SizedBox(height: 10),
+              // User Email
+              Text(
+                user?.email ?? 'user@example.com',
+                style: GoogleFonts.instrumentSans(
+                  fontSize: 16,
+                  color: Color(0xff757575),
+                ),
+              ),
+              SizedBox(height: 30),
+              // Profile Options
+              _buildProfileOption(
+                context,
+                'Edit Profile',
+                Icons.edit,
+                () => Navigator.pushNamed(context, '/edit_profile'),
+              ),
+              _buildProfileOption(
+                context,
+                'Change Password',
+                Icons.lock,
+                () => Navigator.pushNamed(context, '/change_password'),
+              ),
+              _buildProfileOption(
+                context,
+                'Logout',
+                Icons.logout,
+                _logoutUser,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Build profile options (Reusable)
+  Widget _buildProfileOption(
+      BuildContext context, String title, IconData icon, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon, color: Color(0xffc89b3c)),
+      title: Text(
+        title,
+        style: GoogleFonts.instrumentSans(
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+          color: Color(0xff212121),
+        ),
+      ),
+      trailing: Icon(Icons.arrow_forward_ios, color: Color(0xff757575)),
+      onTap: onTap,
+    );
+  }
+
+  /// Logout Function
+  Future<void> _logoutUser() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacementNamed(context, '/login');
+  }
+}
