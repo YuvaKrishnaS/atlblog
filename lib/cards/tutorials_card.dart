@@ -144,7 +144,9 @@ class TutorialCard extends StatelessWidget {
 }
 
 class TutorialsList extends StatelessWidget {
-  const TutorialsList({super.key});
+  final String searchQuery;
+
+  const TutorialsList({super.key, required this.searchQuery});
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +154,6 @@ class TutorialsList extends StatelessWidget {
       stream: FirebaseFirestore.instance
           .collection('blogs')
           .orderBy('createdAt', descending: true)
-          .limit(10)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -163,7 +164,18 @@ class TutorialsList extends StatelessWidget {
           return const Center(child: Text("No tutorials found."));
         }
 
-        final tutorials = snapshot.data!.docs;
+        final tutorials = snapshot.data!.docs.where((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          final title = data['title']?.toString().toLowerCase() ?? '';
+          final author = data['author']?.toString().toLowerCase() ?? '';
+          final query = searchQuery.toLowerCase();
+
+          return query.isEmpty || title.contains(query) || author.contains(query);
+        }).toList();
+
+        if (tutorials.isEmpty) {
+          return const Center(child: Text("No results match your search."));
+        }
 
         return ListView.builder(
           shrinkWrap: true,
@@ -178,7 +190,7 @@ class TutorialsList extends StatelessWidget {
               authorImageBase64: data['authorImage'] ?? '',
               timestamp: (data['createdAt'] as Timestamp?)?.toDate(),
               onTap: () {
-                // Navigate to detail page or perform action
+                // Navigate to detail page
               },
             );
           },
