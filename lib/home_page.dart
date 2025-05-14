@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 import 'package:atal_without_krishna/firebase_auth_sevices.dart';
 import 'package:atal_without_krishna/get_started_page.dart';
 import 'package:atal_without_krishna/interactive_pages/learn_basics.dart';
@@ -157,22 +158,33 @@ class _HomePageState extends State<HomePage> {
     ImageProvider? profilePic = profilePicBase64 != null
         ? MemoryImage(base64Decode(profilePicBase64!))
         : AssetImage('assets/default_profile_pic.png') as ImageProvider;
+
     return [
       SliverAppBar(
         pinned: true,
         floating: true,
-        backgroundColor: backgroundColor,
+        backgroundColor: Colors.transparent,
         expandedHeight: 80.0,
-        flexibleSpace: FlexibleSpaceBar(
-          title: Text(
-            'ATL Blog',
-            style: GoogleFonts.instrumentSans(
-              color: textColor,
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
+        elevation: 0,
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Container(
+              alignment: Alignment.center,
+              color: Colors.white.withOpacity(0.2), // Adjust for glass effect
+              child: FlexibleSpaceBar(
+                title: Text(
+                  'ATL Blog',
+                  style: GoogleFonts.instrumentSans(
+                    color: textColor,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                centerTitle: true,
+              ),
             ),
           ),
-          centerTitle: true,
         ),
         actions: [
           Padding(
@@ -222,7 +234,7 @@ class _HomePageState extends State<HomePage> {
           boxShadow: [
             BoxShadow(
               color: textColor.withOpacity(0.2),
-              blurRadius: 8,
+              blurRadius: 8.0,
             ),
           ],
         ),
