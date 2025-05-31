@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:atal_without_krishna/components/app_drawer.dart';
 import 'package:atal_without_krishna/firebase_auth_sevices.dart';
 import 'package:atal_without_krishna/get_started_page.dart';
 import 'package:atal_without_krishna/interactive_pages/learn_basics.dart';
@@ -103,31 +104,7 @@ class _HomePageState extends State<HomePage> {
         : AssetImage('assets/default_profile_pic.png') as ImageProvider;
 
     return Scaffold(
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: primaryColor,
-              ),
-              child: Text(
-                'ATL Blog',
-                style: GoogleFonts.instrumentSans(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.logout_rounded, color: IconColor),
-              title: Text('Logout'),
-              onTap: () => _logout(context),
-            ),
-          ],
-        ),
-      ),
+      drawer: AppDrawer(primaryColor: primaryColor, iconColor: Color(0xff212121)),
       backgroundColor: backgroundColor,
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
