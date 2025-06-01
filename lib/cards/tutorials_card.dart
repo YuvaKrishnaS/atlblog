@@ -40,7 +40,7 @@ class TutorialCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           color: const Color(0xffeae9e9),
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(16.00),
         ),
         child: Stack(
           children: [

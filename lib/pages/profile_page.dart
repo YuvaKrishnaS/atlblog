@@ -184,7 +184,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   _profileOption(LineAwesomeIcons.lock_solid, 'Privacy & Security', () {
                     _navigateWithAnimation(context, PrivacySecurityPage());
                   }),
-                  _profileOption(Icons.logout, 'Logout', () {
+                  _profileOption(Icons.logout, 'Logot', () {
                     _logout(context);
                   }),
                   Column(
