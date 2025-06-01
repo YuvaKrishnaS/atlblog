@@ -31,7 +31,7 @@ class TutorialCard extends StatelessWidget {
         timestamp != null && DateTime.now().difference(timestamp!).inHours < 24;
 
     final TextStyle fontChoice = GoogleFonts.instrumentSans();
-    final Color textColor = const Color(0xff0d1b2a);
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return GestureDetector(
       onTap: onTap,
@@ -39,46 +39,115 @@ class TutorialCard extends StatelessWidget {
         width: double.infinity,
         margin: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: const Color(0xffeae9e9),
-          borderRadius: BorderRadius.circular(16.00),
+          gradient: LinearGradient(
+            colors: isDarkMode
+                ? [
+              Color(0xFF2A2A2A),
+              Color(0xFF1F1F1F),
+            ]
+                : [
+              Color(0xFFFFFFFF),
+              Color(0xFFF8F9FA),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20.0),
+          boxShadow: [
+            BoxShadow(
+              color: isDarkMode
+                  ? Colors.black.withOpacity(0.3)
+                  : Colors.grey.withOpacity(0.15),
+              blurRadius: 15.0,
+              offset: Offset(0, 8),
+              spreadRadius: 0,
+            ),
+            BoxShadow(
+              color: isDarkMode
+                  ? Colors.white.withOpacity(0.05)
+                  : Colors.white.withOpacity(0.8),
+              blurRadius: 5.0,
+              offset: Offset(0, -2),
+              spreadRadius: 0,
+            ),
+          ],
+          border: Border.all(
+            color: isDarkMode
+                ? Colors.white.withOpacity(0.1)
+                : Colors.grey.withOpacity(0.1),
+            width: 1,
+          ),
         ),
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Thumbnail Image
+                  // Thumbnail Image with modern styling
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.memory(
-                      thumbnailBytes,
-                      height: 175,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Image.memory(
+                        thumbnailBytes,
+                        height: 175,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
 
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
 
-                  // Author + Title row
+                  // Author + Title row with modern spacing
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: Row(
                       children: [
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundImage: MemoryImage(authorImageBytes),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: [
+                              BoxShadow(
+                                color: isDarkMode
+                                    ? Colors.black.withOpacity(0.3)
+                                    : Colors.grey.withOpacity(0.2),
+                                blurRadius: 8,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: CircleAvatar(
+                            radius: 21,
+                            backgroundColor: isDarkMode ? Color(0xFF404040) : Color(0xFFF0F0F0),
+                            child: CircleAvatar(
+                              radius: 19,
+                              backgroundImage: MemoryImage(authorImageBytes),
+                            ),
+                          ),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 14),
                         Expanded(
                           child: Text(
                             title,
                             style: fontChoice.copyWith(
-                              fontSize: 15,
+                              fontSize: 15.5,
                               fontWeight: FontWeight.w600,
-                              color: textColor,
+                              color: isDarkMode
+                                  ? Colors.white.withOpacity(0.95)
+                                  : Color(0xFF1A1A1A),
+                              height: 1.3,
+                              letterSpacing: -0.2,
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -88,22 +157,43 @@ class TutorialCard extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
                 ],
               ),
             ),
 
-            // Bookmark icon
+            // Modern bookmark icon
             Positioned(
-              top: 12,
-              right: 12,
+              top: 16,
+              right: 16,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white70,
-                  shape: BoxShape.circle,
+                  color: isDarkMode
+                      ? Colors.black.withOpacity(0.6)
+                      : Colors.white.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                  border: Border.all(
+                    color: isDarkMode
+                        ? Colors.white.withOpacity(0.1)
+                        : Colors.grey.withOpacity(0.2),
+                    width: 1,
+                  ),
                 ),
                 child: IconButton(
-                  icon: const Icon(Icons.bookmark_border),
+                  icon: Icon(
+                    Icons.bookmark_border,
+                    color: isDarkMode
+                        ? Colors.white.withOpacity(0.8)
+                        : Color(0xFF666666),
+                    size: 22,
+                  ),
                   onPressed: () {
                     // Bookmark functionality here
                   },
@@ -111,27 +201,37 @@ class TutorialCard extends StatelessWidget {
               ),
             ),
 
-            // Latest upload badge
+            // Modern latest upload badge
             if (isRecentUpload)
               Positioned(
-                top: 12,
-                left: 12,
+                top: 16,
+                left: 16,
                 child: Container(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Color(0XFFFFFFFF), Colors.grey.shade400],
+                      colors: isDarkMode
+                          ? [Color(0xFF4CAF50), Color(0xFF2E7D32)]
+                          : [Color(0xFF66BB6A), Color(0xFF4CAF50)],
                       begin: Alignment.topLeft,
-                      end: Alignment.bottomRight),
-                    borderRadius: BorderRadius.circular(8),
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xFF4CAF50).withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
                   ),
-                  child: const Text(
+                  child: Text(
                     "Latest upload",
-                    style: TextStyle(
-                      fontSize: 11.5,
+                    style: GoogleFonts.instrumentSans(
+                      fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      color: Colors.white,
+                      letterSpacing: 0.2,
                     ),
                   ),
                 ),
@@ -157,11 +257,25 @@ class TutorialsList extends StatelessWidget {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          );
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Center(child: Text("No tutorials found."));
+          return Center(
+            child: Text(
+              "No tutorials found.",
+              style: GoogleFonts.instrumentSans(
+                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
+                fontSize: 16,
+              ),
+            ),
+          );
         }
 
         final tutorials = snapshot.data!.docs.where((doc) {
@@ -174,7 +288,15 @@ class TutorialsList extends StatelessWidget {
         }).toList();
 
         if (tutorials.isEmpty) {
-          return const Center(child: Text("No results match your search."));
+          return Center(
+            child: Text(
+              "No results match your search.",
+              style: GoogleFonts.instrumentSans(
+                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
+                fontSize: 16,
+              ),
+            ),
+          );
         }
 
         return ListView.builder(

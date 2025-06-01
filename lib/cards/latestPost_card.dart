@@ -21,50 +21,118 @@ class LatestPostCard extends StatelessWidget {
     Uint8List thumbnailBytes = base64Decode(thumbnailBase64);
     Uint8List authorImageBytes = base64Decode(authorImageBase64);
     final TextStyle fontChoice = GoogleFonts.instrumentSans();
-    final Color textColor = const Color(0xff0d1b2a);
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
-        color: Color(0xffeae9e9),
-        borderRadius: BorderRadius.circular(16.0),
+        gradient: LinearGradient(
+          colors: isDarkMode
+              ? [
+            Color(0xFF2A2A2A),
+            Color(0xFF1F1F1F),
+          ]
+              : [
+            Color(0xFFFFFFFF),
+            Color(0xFFF8F9FA),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20.0),
+        boxShadow: [
+          BoxShadow(
+            color: isDarkMode
+                ? Colors.black.withOpacity(0.3)
+                : Colors.grey.withOpacity(0.15),
+            blurRadius: 15.0,
+            offset: Offset(0, 8),
+            spreadRadius: 0,
+          ),
+          BoxShadow(
+            color: isDarkMode
+                ? Colors.white.withOpacity(0.05)
+                : Colors.white.withOpacity(0.8),
+            blurRadius: 5.0,
+            offset: Offset(0, -2),
+            spreadRadius: 0,
+          ),
+        ],
+        border: Border.all(
+          color: isDarkMode
+              ? Colors.white.withOpacity(0.1)
+              : Colors.grey.withOpacity(0.1),
+          width: 1,
+        ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image section
+            // Image section with modern styling
             ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.memory(
-                thumbnailBytes,
-                height: 175,
-                width: double.infinity,
-                fit: BoxFit.cover,
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Image.memory(
+                  thumbnailBytes,
+                  height: 175,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-            const SizedBox(height: 8),
-            // Author & Title Row
-            // Author & Title Row
+            const SizedBox(height: 12),
+            // Author & Title Row with modern spacing
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 21,
-                    backgroundImage: MemoryImage(authorImageBytes),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: [
+                        BoxShadow(
+                          color: isDarkMode
+                              ? Colors.black.withOpacity(0.3)
+                              : Colors.grey.withOpacity(0.2),
+                          blurRadius: 8,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: CircleAvatar(
+                      radius: 22,
+                      backgroundColor: isDarkMode ? Color(0xFF404040) : Color(0xFFF0F0F0),
+                      child: CircleAvatar(
+                        radius: 20,
+                        backgroundImage: MemoryImage(authorImageBytes),
+                      ),
+                    ),
                   ),
-                  const SizedBox(width: 12),
-                  // Title text
+                  const SizedBox(width: 14),
+                  // Title text with modern typography
                   Expanded(
                     child: Text(
                       title,
                       style: fontChoice.copyWith(
-                        fontSize: 15.3,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: textColor,
+                        color: isDarkMode
+                            ? Colors.white.withOpacity(0.95)
+                            : Color(0xFF1A1A1A),
+                        height: 1.3,
+                        letterSpacing: -0.2,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -93,10 +161,24 @@ class LatestPostsList extends StatelessWidget {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          );
         }
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Text("No recent tutorials found.");
+          return Center(
+            child: Text(
+              "No recent tutorials found.",
+              style: GoogleFonts.instrumentSans(
+                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
+                fontSize: 16,
+              ),
+            ),
+          );
         }
 
         final blogs = snapshot.data!.docs;
