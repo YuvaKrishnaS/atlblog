@@ -687,13 +687,13 @@ class TutorialsList extends StatelessWidget {
               thumbnailBase64: data['thumbnail'] ?? '',
               authorImageBase64: data['authorImage'] ?? '',
               timestamp: (data['createdAt'] as Timestamp?)?.toDate(),
-              description: data[''],
+              description: data['content'] ?? 'No Content Available!',
               authorName: data['author'] ?? '',
-              category: data['category'] ?? '',
+              category: data['categories'] ?? '',
               difficulty: data['difficulty'] ?? '',
-              duration: 2,
-              views: 125,
-              rating: 2,
+              duration: data['duration'] ?? 0,
+              views: data['views'] ?? 0,
+              rating: data['rating'] ?? 4.5,
               onTap: () {
                 // Navigate to detail page
               },
