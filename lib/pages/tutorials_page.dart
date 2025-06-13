@@ -169,7 +169,7 @@ class _TutorialsPageState extends State<TutorialsPage> with TickerProviderStateM
       SliverAppBar(
         pinned: true,
         floating: true,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xfff5f6f7),
         expandedHeight: 100.0,
         elevation: 0,
         leading: IconButton(
@@ -687,7 +687,7 @@ class TutorialsList extends StatelessWidget {
               thumbnailBase64: data['thumbnail'] ?? '',
               authorImageBase64: data['authorImage'] ?? '',
               timestamp: (data['createdAt'] as Timestamp?)?.toDate(),
-              description: data[''],
+              description: data[''] ?? '',
               authorName: data['author'] ?? '',
               category: data['category'] ?? '',
               difficulty: data['difficulty'] ?? '',
@@ -704,34 +704,3 @@ class TutorialsList extends StatelessWidget {
     );
   }
 }
-// Enhanced TutorialsList widget to support filtering
-// class TutorialsList extends StatelessWidget {
-//   final String searchQuery;
-//   final String selectedCategory;
-//   final String selectedDifficulty;
-//
-//   const TutorialsList({
-//     Key? key,
-//     required this.searchQuery,
-//     this.selectedCategory = 'All',
-//     this.selectedDifficulty = 'All',
-//   }) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     // Your existing TutorialsList implementation
-//     // Add filtering logic based on searchQuery, selectedCategory, and selectedDifficulty
-//     return Container(
-//       child: TutorialsList(searchQuery: searchQuery),
-//       // child: Text(
-//       //   'Tutorials will be displayed here with filtering applied:\n'
-//       //       'Search: $searchQuery\n'
-//       //       'Category: $selectedCategory\n'
-//       //       'Difficulty: $selectedDifficulty',
-//       //   style: GoogleFonts.instrumentSans(
-//       //     color: ThemeColors.getTextColor(context),
-//       //   ),
-//       // ),
-//     );
-//   }
-// }

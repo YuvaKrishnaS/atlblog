@@ -75,6 +75,7 @@ flutter:
     - assets/logo.png
     - assets/profile.jpg
     - assets/profile_author.jpg
+    - assets/arduino.png
     - assets/sample_image.png
 
   # The following line ensures that the Material Icons font is

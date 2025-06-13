@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       SliverAppBar(
         pinned: true,
         floating: true,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xfff5f6f7),
         expandedHeight: 80.0,
         elevation: 0,
         flexibleSpace: ClipRect(
